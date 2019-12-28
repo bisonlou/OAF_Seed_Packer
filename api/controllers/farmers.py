@@ -52,3 +52,70 @@ def add_farmer():
 
     abort(422)
 
+
+@app.route('/farmers/<int:farmer_id>', methods=['PUT'])
+def update_farmer(farmer_id):
+    firstname = request.json.get('firstname', None)
+    lastname = request.json.get('lastname', None)
+    phone = request.json.get('phone', None )
+    email = request.json.get('email', None)
+    country = request.json.get('country', None)
+    state = request.json.get('state', None)
+    village = request.json.get('village', None)
+
+    # validate_farmer(request)
+
+    farmer = Farmer.query.get(farmer_id)
+
+    if not farmer:
+        abort(404)
+
+    farmer.firstname=firstname,
+    farmer.lastname=lastname,
+    farmer.phone=phone,
+    farmer.email=email,
+    farmer.country=country,
+    farmer.state=state,
+    farmer.village=village
+
+    error = False
+    try:
+        farmer_id = farmer.update()
+    except Exception:
+        error = True
+        print(sys.exc_info())
+
+    if not error:
+        return jsonify({
+            'success': True,
+            'id': farmer_id,
+            'message': 'farmer successfully updated'
+        }), 200
+
+    abort(422)
+
+@app.route('/farmers/<int:farmer_id>', methods=['DELETE'])
+def delete_farmer(farmer_id):
+
+    farmer = Farmer.query.get(farmer_id)
+
+    if not farmer:
+        abort(404)
+
+    error = False
+    try:
+        farmer_id = farmer.delete()
+    except Exception:
+        error = True
+        print(sys.exc_info())
+
+    if not error:
+        return jsonify({
+            'success': True,
+            'message': 'farmer successfully deleted'
+        }), 200
+
+    abort(422)
+
+
+

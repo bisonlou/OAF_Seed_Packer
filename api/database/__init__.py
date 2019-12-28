@@ -16,3 +16,6 @@ def create_db(app, database_uri=database_uri):
     migrate = Migrate(app, db)
 
 import api.models.farmer
+import api.models.product
+import api.models.order
+import api.models.order_detail
