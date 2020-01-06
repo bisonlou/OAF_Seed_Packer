@@ -11,6 +11,7 @@ class Farmer(db.Model):
     country = db.Column(db.String, nullable=False)
     state = db.Column(db.String, nullable=False)
     village = db.Column(db.String, nullable=False)
+    farmer = db.relationship('Order', backref='farmer', lazy=True,  cascade="all, delete-orphan")
 
     def format_short(self):
         return {

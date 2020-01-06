@@ -20,13 +20,16 @@ def get_orders():
 
 @app.route('/orders/<int:order_id>')
 def get_order_details(order_id):
-    orders = Order.query.all()
-    data = [order.format_long() for order in orders]
+    order = Order.query.get(order_id)
+
+    if not order:
+        abort(404)
+
+    data = order.format_long()
 
     return jsonify({
             'success': True,
-            'data': data,
-            'count': len(data)
+            'data': data
         }), 200
 
 @app.route('/orders', methods=['POST'])
@@ -43,13 +46,15 @@ def add_order():
 
     for order_detail in order_details:
         product_id = order_detail.get('product_id')
+        line_no = order_detail.get('line_no')
         order_qty = order_detail.get('order_qty')
-        order_total = order_detail.get('order_total')
+        line_total = order_detail.get('line_total')
 
         order_detail = OrderDetail(
             product_id=product_id,
+            line_no=line_no,
             order_qty = order_qty,
-            order_total = order_total)
+            line_total = line_total)
 
         order.order_details.append(order_detail)
 
@@ -74,6 +79,7 @@ def add_order():
 @app.route('/orders/<int:order_id>', methods=['PUT'])
 def update_order(order_id):
     farmer_id = request.json.get('farmer_id', None)
+    line_no = order_detail.get('line_no')
     order_date = request.json.get('order_date', None)
     order_details = request.json.get('order_details', None )
 
@@ -87,20 +93,20 @@ def update_order(order_id):
     order.farmer_id=farmer_id,
     order.order_date=order_date
 
-    current_order_details = OrderDetail.query.filter(OrderDetail.order_id==order_id).all()
-
-    for order_detail in current_order_details:
+    for order_detail in order.order_details:
         order.order_details.remove(order_detail)
 
     for order_detail in order_details:
         product_id = order_detail.get('product_id')
+        line_no = order_detail.get('line_no')
         order_qty = order_detail.get('order_qty')
-        order_total = order_detail.get('order_total')
+        line_total = order_detail.get('line_total')
 
         order_detail = OrderDetail(
             product_id=product_id,
+            line_no=line_no,
             order_qty = order_qty,
-            order_total = order_total)
+            line_total = line_total)
 
         order.order_details.append(order_detail)
 

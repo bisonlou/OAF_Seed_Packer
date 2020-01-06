@@ -9,13 +9,14 @@ class Product(db.Model):
     qty = db.Column(db.Float, default=0.0)
     units = db.Column(db.String, default='kg')
     unit_price = db.Column(db.Float, default=0.0)
+    product = db.relationship('OrderDetail', backref='product', lazy=True, cascade='all, delete-orphan')
 
 
     def format_short(self):
         return {
             'id': self.id,
             'name': self.name,
-            'description': self.description,
+            'description': self.description
         }
 
     def format_long(self):
@@ -24,6 +25,7 @@ class Product(db.Model):
             'name': self.name,
             'description': self.description,
             'qty': self.qty,
+            'units': self.units,
             'unit_price': self.unit_price,
         }
 

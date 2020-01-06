@@ -33,6 +33,7 @@ def add_product():
     name = request.json.get('name', None)
     description = request.json.get('description', None)
     qty = request.json.get('qty', None )
+    units = request.json.get('unitis', None)
     unit_price = request.json.get('unit_price', None)
 
     # validate_product(request)
@@ -41,6 +42,7 @@ def add_product():
         name=name,
         description=description,
         qty=qty,
+        units=units,
         unit_price=unit_price)
 
     error = False
@@ -64,6 +66,7 @@ def update_product(product_id):
     name = request.json.get('name', None)
     description = request.json.get('description', None)
     qty = request.json.get('qty', None )
+    units = request.json.get('unitis', None)
     unit_price = request.json.get('unit_price', None)
 
     # validate_product(request)
@@ -76,6 +79,7 @@ def update_product(product_id):
     product.name=name,
     product.description=description,
     product.qty=qty,
+    product.units=units,
     product.unit_price=unit_price
 
     error = False
