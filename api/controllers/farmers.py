@@ -2,8 +2,11 @@ import sys
 from api import app
 from flask import request, jsonify, abort
 from api.models.farmer import Farmer
+from api.auth import requires_auth
+
 
 @app.route('/farmers')
+@requires_auth('get:farmers')
 def get_famers():
     farmers = Farmer.query.all()
     data = [farmer.format_short() for farmer in farmers]
@@ -16,6 +19,7 @@ def get_famers():
 
 
 @app.route('/farmers', methods=['POST'])
+@requires_auth('post:farmer')
 def add_farmer():
     firstname = request.json.get('firstname', None)
     lastname = request.json.get('lastname', None)
@@ -54,6 +58,7 @@ def add_farmer():
 
 
 @app.route('/farmers/<int:farmer_id>', methods=['PUT'])
+@requires_auth('put:farmer')
 def update_farmer(farmer_id):
     firstname = request.json.get('firstname', None)
     lastname = request.json.get('lastname', None)
@@ -95,6 +100,7 @@ def update_farmer(farmer_id):
     abort(422)
 
 @app.route('/farmers/<int:farmer_id>', methods=['DELETE'])
+@requires_auth('put:farmer')
 def delete_farmer(farmer_id):
 
     farmer = Farmer.query.get(farmer_id)
@@ -116,6 +122,3 @@ def delete_farmer(farmer_id):
         }), 200
 
     abort(422)
-
-
-

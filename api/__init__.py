@@ -11,3 +11,4 @@ import api.controllers.farmers
 import api.controllers.products
 import api.controllers.errors
 import api.controllers.orders
+import api.auth
