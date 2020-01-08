@@ -4,6 +4,7 @@ from flask import request, jsonify, abort
 from api.models.product import Product
 
 @app.route('/products')
+@requires_auth('get:products')
 def get_products():
     products = Product.query.all()
     data = [product.format_short() for product in products]
@@ -16,6 +17,7 @@ def get_products():
 
 
 @app.route('/products/<int:product_id>')
+requires_auth('get:product')
 def get_product_detail(product_id):
     product = Product.query.get(product_id)
 
@@ -29,6 +31,7 @@ def get_product_detail(product_id):
 
 
 @app.route('/products', methods=['POST'])
+@requires_auth('post:product')
 def add_product():
     name = request.json.get('name', None)
     description = request.json.get('description', None)
@@ -62,6 +65,7 @@ def add_product():
     abort(422)
 
 @app.route('/products/<int:product_id>', methods=['PUT'])
+@requires_auth('put:product')
 def update_product(product_id):
     name = request.json.get('name', None)
     description = request.json.get('description', None)
@@ -99,6 +103,7 @@ def update_product(product_id):
     abort(422)
 
 @app.route('/products/<int:product_id>', methods=['DELETE'])
+@requires_auth('delete:product')
 def delete_product(product_id):
 
     product = Product.query.get(product_id)
