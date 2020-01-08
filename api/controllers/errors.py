@@ -18,6 +18,21 @@ def bad_request(error):
         'error': 400
     }), 400
 
+@app.errorhandler(401)
+def unauthorized(error):
+    return jsonify({
+        'success': False,
+        'message': 'unauthorized',
+        'error': 401
+    }), 401
+
+@app.errorhandler(403)
+def permission_denied(error):
+    return jsonify({
+        'success': False,
+        'message': 'permission denied',
+        'error': 403
+    }), 403
 
 @app.errorhandler(405)
 def method_not_allowed(error):
