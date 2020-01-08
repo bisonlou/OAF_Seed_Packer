@@ -2,6 +2,7 @@ import sys
 from api import app
 from flask import request, jsonify, abort
 from api.models.product import Product
+from api.auth import requires_auth
 
 @app.route('/products')
 @requires_auth('get:products')
@@ -17,7 +18,7 @@ def get_products():
 
 
 @app.route('/products/<int:product_id>')
-requires_auth('get:product')
+@requires_auth('get:product')
 def get_product_detail(product_id):
     product = Product.query.get(product_id)
 

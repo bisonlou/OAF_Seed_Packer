@@ -5,6 +5,7 @@ from api.models.farmer import Farmer
 from api.models.product import Product
 from api.models.order import Order
 from api.models.order_detail import OrderDetail
+from api.auth import requires_auth
 
 @app.route('/orders')
 @requires_auth('get:orders')
