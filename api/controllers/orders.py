@@ -9,7 +9,7 @@ from api.auth import requires_auth
 
 @app.route('/orders')
 @requires_auth('get:orders')
-def get_orders():
+def get_orders(payload):
     orders = Order.query.all()
     data = [order.format_short() for order in orders]
 
@@ -22,7 +22,7 @@ def get_orders():
 
 @app.route('/orders/<int:order_id>')
 @requires_auth('get:order')
-def get_order_details(order_id):
+def get_order_details(payload, order_id):
     order = Order.query.get(order_id)
 
     if not order:
@@ -37,7 +37,7 @@ def get_order_details(order_id):
 
 @app.route('/orders', methods=['POST'])
 @requires_auth('post:order')
-def add_order():
+def add_order(payload):
     farmer_id = request.json.get('farmer_id', None)
     order_date = request.json.get('order_date', None)
     order_details = request.json.get('order_details', None )
@@ -82,7 +82,7 @@ def add_order():
 
 @app.route('/orders/<int:order_id>', methods=['PUT'])
 @requires_auth('put:order')
-def update_order(order_id):
+def update_order(payload, order_id):
     farmer_id = request.json.get('farmer_id', None)
     line_no = order_detail.get('line_no')
     order_date = request.json.get('order_date', None)
@@ -134,7 +134,7 @@ def update_order(order_id):
 
 @app.route('/orders/<int:order_id>', methods=['DELETE'])
 @requires_auth('delete:order')
-def delete_order(order_id):
+def delete_order(payload, order_id):
 
     order = Order.query.get(order_id)
 

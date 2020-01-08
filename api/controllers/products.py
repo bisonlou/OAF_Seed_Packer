@@ -6,7 +6,7 @@ from api.auth import requires_auth
 
 @app.route('/products')
 @requires_auth('get:products')
-def get_products():
+def get_products(payload):
     products = Product.query.all()
     data = [product.format_short() for product in products]
 
@@ -19,7 +19,7 @@ def get_products():
 
 @app.route('/products/<int:product_id>')
 @requires_auth('get:product')
-def get_product_detail(product_id):
+def get_product_detail(payload, product_id):
     product = Product.query.get(product_id)
 
     if not product:
@@ -33,7 +33,7 @@ def get_product_detail(product_id):
 
 @app.route('/products', methods=['POST'])
 @requires_auth('post:product')
-def add_product():
+def add_product(payload):
     name = request.json.get('name', None)
     description = request.json.get('description', None)
     qty = request.json.get('qty', None )
@@ -67,7 +67,7 @@ def add_product():
 
 @app.route('/products/<int:product_id>', methods=['PUT'])
 @requires_auth('put:product')
-def update_product(product_id):
+def update_product(payload, product_id):
     name = request.json.get('name', None)
     description = request.json.get('description', None)
     qty = request.json.get('qty', None )
@@ -105,7 +105,7 @@ def update_product(product_id):
 
 @app.route('/products/<int:product_id>', methods=['DELETE'])
 @requires_auth('delete:product')
-def delete_product(product_id):
+def delete_product(payload, product_id):
 
     product = Product.query.get(product_id)
 

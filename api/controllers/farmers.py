@@ -7,7 +7,7 @@ from api.auth import requires_auth
 
 @app.route('/farmers')
 @requires_auth('get:farmers')
-def get_famers():
+def get_famers(payload):
     farmers = Farmer.query.all()
     data = [farmer.format_short() for farmer in farmers]
 
@@ -59,7 +59,7 @@ def add_farmer():
 
 @app.route('/farmers/<int:farmer_id>', methods=['PUT'])
 @requires_auth('put:farmer')
-def update_farmer(farmer_id):
+def update_farmer(payload, farmer_id):
     firstname = request.json.get('firstname', None)
     lastname = request.json.get('lastname', None)
     phone = request.json.get('phone', None )
@@ -101,7 +101,7 @@ def update_farmer(farmer_id):
 
 @app.route('/farmers/<int:farmer_id>', methods=['DELETE'])
 @requires_auth('put:farmer')
-def delete_farmer(farmer_id):
+def delete_farmer(payload, farmer_id):
 
     farmer = Farmer.query.get(farmer_id)
 
