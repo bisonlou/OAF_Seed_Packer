@@ -1,7 +1,13 @@
-import unittest
-from os import environ
+import os
+from flask import Flask
 from functools import wraps
 from unittest.mock import patch
+import unittest
+import json
+from api import app
+from api.controllers.errors import errorhandler_app
+from api.database import create_db
+
 
 def mock_func(x=''):
     def decorator(f):
@@ -14,34 +20,25 @@ def mock_func(x=''):
 
 """ overiding requires_auth decorator """
 patch('api.controllers.farmers.requires_auth', mock_func).start()
+from api.controllers.farmers import farmers_app
 
-from api.models.farmer import Farmer
-from api.database import create_db
-from api import app
+myApp = Flask(__name__)
+myApp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+database_path = os.environ['TEST_DATABASE_URL']
 
+create_db(myApp, database_path)
+farmers_app(myApp)
+errorhandler_app(myApp)
 
-class TestFarmers(unittest.TestCase):
-  
+class FarmersTestCase(unittest.TestCase):
+
     def setUp(self):
-        self.app = app
-        self.databse_uri = environ.get('TEST_DATABASE_URL', None)
-        create_db(self.app, self.databse_uri)
-        self.client = self.app.test_client
-
-        sample_farmer = Farmer(
-            firstname = 'john',
-            lastname = 'doe',
-            phone = '0765667675',
-            email = 'johndoe@gmail.com',
-            country = 'uganda',
-            state = 'kampala',
-            village = 'kazing'
-        )
+        self.client = myApp.test_client()
 
     def test_get_farmers(self):
-        response = self.client().get('/farmers')
-        data = response.get_json()
-        print(data)
-        self.assertTrue(data['success'])
+        """ Test get farmers endpoint """
+        response = self.client.get('/farmers')
+        body = json.loads(response.data.decode())
 
-
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(body['success'])
