@@ -19,9 +19,9 @@ def mock_func(x=''):
     return decorator
 
 """ overiding requires_auth decorator """
-patch('api.controllers.farmers.requires_auth', mock_func).start()
-from api.controllers.farmers import farmers_app
-from api.models.farmer import Farmer
+patch('api.controllers.products.requires_auth', mock_func).start()
+from api.controllers.products import products_app
+from api.models.product import Product
 from api.database import db
 
 myApp = Flask(__name__)
@@ -29,7 +29,7 @@ myApp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 database_path = os.environ['TEST_DATABASE_URL']
 
 create_db(myApp, database_path)
-farmers_app(myApp)
+products_app(myApp)
 errorhandler_app(myApp)
 
 class FarmersTestCase(unittest.TestCase):
@@ -39,63 +39,70 @@ class FarmersTestCase(unittest.TestCase):
         db.create_all()
 
         db.session.add(
-            Farmer(
-            firstname='john',
-            lastname='dee',
-            phone='123',
-            email='john@oaf.oaf',
-            country= 'ug',
-            state='kla',
-            village='kaz'
+            Product(
+            name='beans',
+            description='beans',
+            qty=100,
+            units='kgs',
+            unit_price= 1200
             )
         )
 
         db.session.commit()
-        self.farmer = Farmer.query.first()
+        self.product = Product.query.first()
         db.session.close()
 
     def tearDown(self):
         db.drop_all()
 
-    def test_get_farmers(self):
-        """ Test get farmers endpoint """
-        response = self.client.get('/farmers')
+    def test_get_products(self):
+        """ Test get products endpoint """
+        response = self.client.get('/products')
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data['success'])
         self.assertEqual(len(data['data']), 1)
 
-    def test_get_farmers_with_wrong_method(self):
-        """ Test get farmers endpoint """
-        response = self.client.put('/farmers')
+    def test_get_products_with_wrong_method(self):
+        """
+        Test get products endpoint
+        with wrong method
+        Expect 405
+        """
+        response = self.client.put('/products')
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 405)
         self.assertFalse(data['success'])
 
-    def test_get_farmers_with_wrong_endpoint(self):
-        """ Test get farmers endpoint """
-        response = self.client.get('/farmerss')
+    def test_get_products_with_wrong_endpoint(self):
+        """
+        Test get products endpoint
+        With wrong endpoint
+        Expect 404
+        """
+        response = self.client.get('/productss')
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data['success'])
         
-    def test_post_farmers(self):
-        """ Test get farmers endpoint """
+    def test_post_product(self):
+        """
+        Test post product endpoint
+        Expect 200
+        """
         body = {
-            'firstname': 'peter',
-            'lastname': 'pan',
-            'phone': '1234',
-            'email': 'peter@oaf.oaf',
-            'country': 'ug',
-            'state': 'kla',
-            'village': 'kaz'
+            'name': 'cumin',
+            'description': 'cumin',
+            'qty': 100,
+            'units': 'kgs',
+            'unit_price': 1000
         }
 
         response = self.client.post(
-            '/farmers',
+            '/products',
             data=json.dumps(body),
             content_type='application/json'
         )
@@ -104,11 +111,15 @@ class FarmersTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data['success'])
 
-    def test_post_farmers_with_bad_data(self):
-        """ Test get farmers endpoint """
+    def test_post_products_with_bad_data(self):
+        """
+        Test post products endpoint
+        Without data
+        Expect 400
+        """
 
         response = self.client.post(
-            '/farmers',
+            '/products',
             content_type='application/json'
         )
         data = json.loads(response.data.decode())
@@ -116,20 +127,20 @@ class FarmersTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse(data['success'])
 
-    def test_put_farmers(self):
-        """ Test get farmers endpoint """
+    def test_put_products(self):
+        """ 
+        Test put products endpoint
+        Expect 200
+        """
         body = {
-            'firstname': 'john',
-            'lastname': 'doe',
-            'phone': '123',
-            'email': 'john@oaf.oaf',
-            'country': 'ug',
-            'state': 'kla',
-            'village': 'kaz'
+            'name': 'beans',
+            'description': 'bean seeds',
+            'qty': 100,
+            'units': 'kgs',
+            'unit_price': 1000
         }
-
         response = self.client.put(
-            '/farmers/'+ str(self.farmer.id),
+            '/products/'+ str(self.product.id),
             data=json.dumps(body),
             content_type='application/json'
         )
@@ -138,20 +149,22 @@ class FarmersTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data['success'])
 
-    def test_put_farmer_who_does_not_exit(self):
-        """ Test get farmers endpoint """
+    def test_put_product_who_does_not_exit(self):
+        """
+        Test put products endpoint
+        With non-existent product
+        Expect 404
+        """
         body = {
-            'firstname': 'john',
-            'lastname': 'doe',
-            'phone': '123',
-            'email': 'john@oaf.oaf',
-            'country': 'ug',
-            'state': 'kla',
-            'village': 'kaz'
+            'name': 'cumin',
+            'description': 'cumin',
+            'qty': 100,
+            'units': 'kgs',
+            'unit_price': 1000
         }
 
         response = self.client.put(
-            '/farmers/100',
+            '/products/100',
             data=json.dumps(body),
             content_type='application/json'
         )
@@ -161,19 +174,26 @@ class FarmersTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
 
 
-    def test_delete_farmer(self):
-        """ Test get farmers endpoint """
+    def test_delete_product(self):
+        """
+        Test delete products endpoint
+        Expect 200
+        """
 
-        response = self.client.delete('/farmers/'+ str(self.farmer.id))
+        response = self.client.delete('/products/'+ str(self.product.id))
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data['success'])
 
-    def test_delete_farmer_who_does_not_exit(self):
-        """ Test get farmers endpoint """
+    def test_delete_product_which_does_not_exit(self):
+        """
+        Test delete product endpoint
+        With non-existent product
+        Expect 404
+        """
         
-        response = self.client.delete('/farmers/100')
+        response = self.client.delete('/products/100')
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 404)

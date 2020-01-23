@@ -19,7 +19,7 @@ def farmers_app(app):
 
     @app.route('/farmers', methods=['POST'])
     @requires_auth('post:farmer')
-    def add_farmer():
+    def add_farmer(payload):
         firstname = request.json.get('firstname', None)
         lastname = request.json.get('lastname', None)
         phone = request.json.get('phone', None )
@@ -37,7 +37,8 @@ def farmers_app(app):
             email=email,
             country=country,
             state=state,
-            village=village)
+            village=village
+        )
 
         error = False
         try:

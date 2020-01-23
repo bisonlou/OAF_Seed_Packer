@@ -14,6 +14,7 @@ def create_db(app, database_uri):
     db.create_all()
     migrate = Migrate(app, db)
 
+
 import api.models.farmer
 import api.models.product
 import api.models.order
