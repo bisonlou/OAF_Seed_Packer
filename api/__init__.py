@@ -30,7 +30,7 @@ def after_request(response):
 
 @app.route('/')
 def index():
-    return "Welcome to Capstone."
+    return "Welcome to OAF seed packer!"
 
 errorhandler_app(app)
 farmers_app(app)
