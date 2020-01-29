@@ -88,6 +88,130 @@ PUT '/orders/<int:order_id>'
 DELETE '/orders/<int:order_id>'
 ```
 
+### Permissions
+Each endpoint requires permission for access.
+The following are the permissions required for each endpoint.
+
+GET '/farmers'
+```bash
+'get:farmers'
+```
+
+POST '/farmers'
+```bash
+'post:farmer'
+```
+
+PUT '/farmers/<int:farmer_id>'
+```bash
+'put:farmer'
+```
+
+DELETE '/farmers/<int:farmer_id>'
+```bash
+'delete:farmer'
+```
+
+GET '/products'
+```bash
+'get:products
+```
+
+POST '/products'
+```bash
+'post:product'
+```
+
+PUT '/products/<int:product_id>'
+```bash
+'put:product'
+```
+
+DELETE '/products/<int:product_id>'
+```bash
+'delete:product'
+```
+
+GET '/orders'
+```bash
+'get:order'
+```
+
+POST '/orders'
+```bash
+'post:order'
+```
+
+PUT '/orders/<int:order_id>'
+```bash
+'put:order'
+```
+
+DELETE '/orders/<int:order_id>'
+```bash
+'delete:order'
+```
+
+### RBAC
+The following are the permissions for each role.
+
+Admin
+```bash
+[
+    'get:farmers',
+    'get:farmer',
+    'post:farmer',
+    'put:farmer',
+    'delete:farmer',
+    'get:products',
+    'get:product',
+    'post:product',
+    'put:product',
+    'delete:product',
+    'get:orders',
+    'get:order',
+    'post:order',
+    'put:order',
+    'delete:order',
+]
+```
+
+Manager
+```bash
+[
+    'get:farmers',
+    'get:farmer',
+    'post:farmer',
+    'put:farmer',
+    'get:products',
+    'get:product',
+    'post:product',
+    'put:product',
+    'get:orders',
+    'get:order',
+    'post:order',
+    'put:order',
+]
+```
+
+Clerk
+```bash
+[
+    'get:farmers',
+    'get:farmer',
+    'post:farmer',
+    'get:products',
+    'get:product',
+    'post:product',
+    'get:orders',
+    'get:order',
+    'post:order',
+]
+```
+
+
+### Endpoint demonstration
+
 ```bash
 
 curl http://127.0.0.1:5000/farmers -H "Authorization: Bearer {{token}}"

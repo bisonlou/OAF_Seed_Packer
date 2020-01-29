@@ -108,7 +108,7 @@ def farmers_app(app):
         abort(422)
 
     @app.route("/farmers/<int:farmer_id>", methods=["DELETE"])
-    @requires_auth("put:farmer")
+    @requires_auth("delete:farmer")
     def delete_farmer(payload, farmer_id):
 
         farmer = Farmer.query.get(farmer_id)
