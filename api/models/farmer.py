@@ -1,7 +1,8 @@
 from api.database import db
 
+
 class Farmer(db.Model):
-    __tablename__ = 'farmers'
+    __tablename__ = "farmers"
 
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     firstname = db.Column(db.String, nullable=False)
@@ -11,27 +12,29 @@ class Farmer(db.Model):
     country = db.Column(db.String, nullable=False)
     state = db.Column(db.String, nullable=False)
     village = db.Column(db.String, nullable=False)
-    farmer = db.relationship('Order', backref='farmer', lazy=True,  cascade="all, delete-orphan")
+    farmer = db.relationship(
+        "Order", backref="farmer", lazy=True, cascade="all, delete-orphan"
+    )
 
     def format_short(self):
         return {
-            'id': self.id,
-            'firstname': self.firstname,
-            'lastname': self.lastname,
-            'phone': self.phone,
-            'email': self.email
+            "id": self.id,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "phone": self.phone,
+            "email": self.email,
         }
 
     def format_long(self):
         return {
-            'id': self.id,
-            'firstname': self.firstname,
-            'lastname': self.lastname,
-            'phone': self.phone,
-            'email': self.email,
-            'country': self.country,
-            'state': self.state,
-            'village': self.village
+            "id": self.id,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "phone": self.phone,
+            "email": self.email,
+            "country": self.country,
+            "state": self.state,
+            "village": self.village,
         }
 
     def add(self):

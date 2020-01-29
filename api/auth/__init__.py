@@ -43,7 +43,7 @@ def get_token_auth_header():
         raise AuthError(
             {
                 "code": "invalid_header",
-                "description": 'Authorization header must start with "Bearer".',
+                "description": 'Authorization header must start with "Bearer"',
             },
             401,
         )
@@ -78,10 +78,7 @@ def check_permissions(permission, payload):
 
     if permission not in payload["permissions"]:
         raise AuthError(
-            {
-                "code": "unauthorized",
-                "description": "Permission not found."
-            },
+            {"code": "unauthorized", "description": "Permission not found."},
             403,
         )
     return True
@@ -124,19 +121,23 @@ def verify_decode_jwt(token):
 
         except jwt.ExpiredSignatureError:
             raise AuthError(
-                {"code": "token_expired", "description": "Token expired."}, 401
+                {"code": "token_expired", "description": "Token expired."},
+                401,
             )
 
         except jwt.JWTClaimsError:
             raise AuthError(
-                {"code": "invalid_claims", "description": "Incorrect claims."},
+                {
+                    "code": "invalid_claims",
+                    "description": "Incorrect claims.",
+                },
                 401,
             )
         except Exception:
             raise AuthError(
                 {
                     "code": "invalid_header",
-                    "description": "Unable to parse authentication token.",
+                    "description": "Unable to parse authentication token",
                 },
                 400,
             )
